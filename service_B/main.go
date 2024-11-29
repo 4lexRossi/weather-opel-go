@@ -26,7 +26,6 @@ type WeatherResponse struct {
 }
 
 func main() {
-	// Configuração do OpenTelemetry
 	exporter, err := zipkin.NewExporter("http://localhost:9411/api/v2/spans", zipkin.WithSDKOptions())
 	if err != nil {
 		log.Fatalf("Falha ao configurar o exportador Zipkin: %v", err)
@@ -38,7 +37,6 @@ func main() {
 	)
 	otel.SetTracerProvider(tp)
 
-	// Obter o tracer
 	tracer = tp.Tracer("servico-b-tracing")
 
 	http.HandleFunc("/weather", handleWeatherRequest)
@@ -68,7 +66,6 @@ func handleWeatherRequest(w http.ResponseWriter, r *http.Request) {
 
 	cep := req["cep"]
 
-	// Criar span para rastrear a consulta ao serviço de clima
 	ctx, span := tracer.Start(r.Context(), "Consultando clima para o CEP")
 	defer span.End()
 

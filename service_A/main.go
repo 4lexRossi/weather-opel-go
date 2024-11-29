@@ -25,7 +25,6 @@ type CepRequest struct {
 }
 
 func main() {
-	// Configuração do OpenTelemetry
 	exporter, err := zipkin.NewExporter("http://localhost:9411/api/v2/spans", zipkin.WithSDKOptions())
 	if err != nil {
 		log.Fatalf("Falha ao configurar o exportador Zipkin: %v", err)
@@ -37,7 +36,6 @@ func main() {
 	)
 	otel.SetTracerProvider(tp)
 
-	// Obter o tracer
 	tracer = tp.Tracer("servico-a-tracing")
 
 	http.HandleFunc("/cep", handleCepRequest)
@@ -65,13 +63,11 @@ func handleCepRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Valida o CEP
 	if !isValidCEP(req.Cep) {
 		http.Error(w, "invalid zipcode", http.StatusUnprocessableEntity)
 		return
 	}
 
-	// Criar span para rastrear a chamada ao Serviço B
 	ctx, span := tracer.Start(r.Context(), "Chamando o Serviço B")
 	defer span.End()
 
@@ -92,11 +88,9 @@ func isValidCEP(cep string) bool {
 }
 
 func callServicoB(ctx context.Context, cep string) (map[string]interface{}, error) {
-	// Criar span para a chamada ao Serviço B
 	ctx, span := tracer.Start(ctx, "Chamada ao Serviço B")
 	defer span.End()
 
-	// Envia a requisição HTTP para o Serviço B
 	requestBody, err := json.Marshal(map[string]string{"cep": cep})
 	if err != nil {
 		return nil, fmt.Errorf("erro ao montar o corpo da requisição para o Serviço B")
