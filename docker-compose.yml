@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  servico-a:
+    build:
+      context: ./servico-a
+    ports:
+      - "8081:8081"
+    environment:
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - OTEL_TRACES_EXPORTER=zipkin
+    depends_on:
+      - zipkin
+  servico-b:
+    build:
+      context: ./servico-b
+    ports:
+      - "8082:8082"
+    environment:
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - OTEL_TRACES_EXPORTER=zipkin
+    depends_on:
+      - zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
