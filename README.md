@@ -25,15 +25,15 @@ Além disso, foi implementado **tracing distribuído** com **OpenTelemetry (OTEL
 Clone o repositório para o seu ambiente local:
 
 ```bash
-git clone https://github.com/seu-usuario/sistema-clima-com-tracing.git
-cd sistema-clima-com-tracing
+git clone https://github.com/4lexRossi/weather-opel-go.git
+cd weather-opel-go
 ```
 ### Passo 2: Instalar Dependências
 
 Certifique-se de que o Go está instalado em sua máquina. Para instalar as dependências do projeto, navegue até as pastas de Serviço A e Serviço B e execute:
 
 ```bash
-cd servie_A
+cd service_A
 go mod tidy
 
 cd ../service_B
