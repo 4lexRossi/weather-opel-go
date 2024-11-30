@@ -102,7 +102,7 @@ func callServicoB(ctx context.Context, cep string) (map[string]interface{}, erro
 		return nil, fmt.Errorf("erro ao montar o corpo da requisição para o Serviço B")
 	}
 
-	resp, err := http.Post("http://127.0.0.1:8082/weather", "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post("http://service-b:8082/weather", "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, fmt.Errorf("erro ao chamar o Serviço B: %v", err)
 	}
