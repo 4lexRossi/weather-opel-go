@@ -86,3 +86,18 @@ Ao chamar o Serviço A com um CEP válido (`29902555`), você deverá obter a re
 
 ```
 
+## Visualização do Tracing e Exemplos
+
+### Tracing no Zipkin
+A imagem abaixo mostra o tracing distribuído visualizado no painel do Zipkin, com o rastreamento das requisições entre os Serviços A e B.
+
+![Tracing no Zipkin](./docs/zipkin.png)
+
+### Requisição de Exemplo no Postman
+A imagem abaixo mostra uma requisição de exemplo no Postman para testar os serviços.
+
+![Postman Example](./docs/postman.png)
+
+## Download da Coleção Postman
+
+Você pode baixar a coleção Postman usada para testar os serviços clicando [aqui](./docs/Weather-opel.postman_collection.json).
