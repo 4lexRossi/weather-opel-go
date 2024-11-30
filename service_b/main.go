@@ -13,10 +13,10 @@ import (
 	"go.opentelemetry.io/otel/exporters/zipkin"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	"go.opentelemetry.io/otel/trace"
+	traces "go.opentelemetry.io/otel/trace"
 )
 
-var tracer trace.Tracer
+var tracer traces.Tracer
 
 type WeatherResponse struct {
 	City  string  `json:"city"`
@@ -26,14 +26,16 @@ type WeatherResponse struct {
 }
 
 func main() {
-	exporter, err := zipkin.NewExporter("http://localhost:9411/api/v2/spans", zipkin.WithSDKOptions())
+	// Update Zipkin endpoint to explicitly use IPv4
+	zipkinEndpoint := "http://127.0.0.1:9411/api/v2/spans"
+	exporter, err := zipkin.New(zipkinEndpoint)
 	if err != nil {
-		log.Fatalf("Falha ao configurar o exportador Zipkin: %v", err)
+		log.Fatalf("Failed to configure Zipkin exporter: %v", err)
 	}
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
-		trace.WithResource(resource.NewWithAttributes(attribute.Key("service.name").String("servico-b"))),
+		trace.WithResource(resource.NewWithAttributes("service-b", attribute.String("service.name", "servico-b"))),
 	)
 	otel.SetTracerProvider(tp)
 

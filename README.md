@@ -50,7 +50,7 @@ docker-compose up --build
 Isso irá:
 
 Construir as imagens Docker para Serviço A e Serviço B.
-Subir o container do Zipkin.
+Subir o container do Zipkin.bui
 Expor os serviços nas portas configuradas (8081 para o Serviço A, 8082 para o Serviço B e 9411 para o Zipkin).
 
 ### Passo 4: Testar os Serviços
@@ -60,7 +60,7 @@ Serviço A (Validação e Redirecionamento)
 Faça uma requisição `POST` para o Serviço A com um JSON contendo o CEP:
 
 ```bash
-curl -X POST http://localhost:8081/cep -d '{"cep": "29902555"}' -H "Content-Type: application/json"
+curl -X POST http://localhost:8081/cep -d 'v' -H "Content-Type: application/json"
 ```
 
 Se o CEP for válido, o Serviço A chamará o Serviço B e retornará a resposta com a cidade e as temperaturas.
