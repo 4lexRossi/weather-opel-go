@@ -65,7 +65,19 @@ Serviço A (Validação e Redirecionamento)
 Faça uma requisição `POST` para o Serviço A com um JSON contendo o CEP:
 
 ```bash
-curl -X POST http://localhost:8081/cep -d 'v' -H "Content-Type: application/json"
+curl --location 'http://localhost:8081/cep' \
+--header 'Content-Type: application/json' \
+--data '{
+    "cep": "29902555"
+}'
+```
+
+```bash
+curl --location 'http://localhost:8082/weather' \
+--header 'Content-Type: application/json' \
+--data '{
+    "cep": "29902555"
+}'
 ```
 
 Se o CEP for válido, o Serviço A chamará o Serviço B e retornará a resposta com a cidade e as temperaturas.
