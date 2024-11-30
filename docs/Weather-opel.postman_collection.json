@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "228323ad-d40f-4ff4-b60f-4bb5ae35261b",
+		"name": "Weather-opel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5553578",
+		"_collection_link": "https://gold-zodiac-589488.postman.co/workspace/Team-Workspace~6d734aa8-9d3f-4930-82fd-c251a0873c37/collection/5553578-228323ad-d40f-4ff4-b60f-4bb5ae35261b?action=share&source=collection_link&creator=5553578"
+	},
+	"item": [
+		{
+			"name": "service-b",
+			"item": [
+				{
+					"name": "weather",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"29902555\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/weather",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"weather"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cep\": \"29902555\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8082/weather",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8082",
+									"path": [
+										"weather"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 17:16:09 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"city\": \"São Paulo\",\n    \"temp_C\": 28.5,\n    \"temp_F\": 83.3,\n    \"temp_K\": 301.5\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "service-a",
+			"item": [
+				{
+					"name": "cep",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cep\": \"29902555\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/cep",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"cep"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cep\": \"29902555\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/cep",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"cep"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Nov 2024 17:24:18 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "65"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"city\": \"São Paulo\",\n    \"temp_C\": 28.5,\n    \"temp_F\": 83.3,\n    \"temp_K\": 301.5\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
