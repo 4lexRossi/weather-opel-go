@@ -26,49 +26,58 @@ type WeatherResponse struct {
 }
 
 func main() {
-	// Update Zipkin endpoint to explicitly use IPv4
-	zipkinEndpoint := "http://127.0.0.1:9411/api/v2/spans"
+	// Configure Zipkin exporter
+	const zipkinEndpoint = "http://zipkin:9411/api/v2/spans"
 	exporter, err := zipkin.New(zipkinEndpoint)
 	if err != nil {
 		log.Fatalf("Failed to configure Zipkin exporter: %v", err)
 	}
 
+	// Set up TracerProvider
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
-		trace.WithResource(resource.NewWithAttributes("service-b", attribute.String("service.name", "servico-b"))),
+		trace.WithResource(resource.NewWithAttributes("service-b",
+			attribute.String("service.name", "servico-b"),
+		)),
 	)
 	otel.SetTracerProvider(tp)
 
 	tracer = tp.Tracer("servico-b-tracing")
 
+	// Set up HTTP server
 	http.HandleFunc("/weather", handleWeatherRequest)
 
-	log.Println("Servidor B iniciado na porta 8082...")
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	log.Println("Service B started on port 8082...")
+	if err := http.ListenAndServe(":8082", nil); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
 
 func handleWeatherRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	var req map[string]string
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Erro ao ler corpo da requisição", http.StatusInternalServerError)
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
 
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		http.Error(w, "Formato inválido", http.StatusBadRequest)
+	if err = json.Unmarshal(body, &req); err != nil {
+		http.Error(w, "Invalid request format", http.StatusBadRequest)
 		return
 	}
 
-	cep := req["cep"]
+	cep, exists := req["cep"]
+	if !exists {
+		http.Error(w, "CEP is required", http.StatusBadRequest)
+		return
+	}
 
-	ctx, span := tracer.Start(r.Context(), "Consultando clima para o CEP")
+	ctx, span := tracer.Start(r.Context(), "Fetching weather for CEP")
 	defer span.End()
 
 	weatherInfo, err := getWeatherInfo(ctx, cep)
@@ -79,21 +88,25 @@ func handleWeatherRequest(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(weatherInfo)
+	if err := json.NewEncoder(w).Encode(weatherInfo); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func getWeatherInfo(ctx context.Context, cep string) (*WeatherResponse, error) {
-	ctx, span := tracer.Start(ctx, "Consultando a cidade e clima")
+	ctx, span := tracer.Start(ctx, "Querying city and weather")
 	defer span.End()
 
-	if cep == "29902555" {
+	// Simulated logic for weather data
+	switch cep {
+	case "29902555":
 		return &WeatherResponse{
 			City:  "São Paulo",
 			TempC: 28.5,
 			TempF: 28.5*1.8 + 32,
-			TempK: 28.5 + 273,
+			TempK: 28.5 + 273.15,
 		}, nil
+	default:
+		return nil, fmt.Errorf("ZIP code not found")
 	}
-
-	return nil, fmt.Errorf("can not find zipcode")
 }

@@ -26,7 +26,7 @@ type CepRequest struct {
 
 func main() {
 	// Update Zipkin endpoint to explicitly use IPv4
-	zipkinEndpoint := "http://127.0.0.1:9411/api/v2/spans"
+	const zipkinEndpoint = "http://zipkin:9411/api/v2/spans"
 	exporter, err := zipkin.New(zipkinEndpoint)
 	if err != nil {
 		log.Fatalf("Failed to configure Zipkin exporter: %v", err)
@@ -34,7 +34,8 @@ func main() {
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
-		trace.WithResource(resource.NewWithAttributes("service-a", attribute.String("service.name", "servico-a"))),
+		trace.WithResource(resource.NewWithAttributes("service-a",
+			attribute.String("service.name", "servico-a"))),
 	)
 	otel.SetTracerProvider(tp)
 
