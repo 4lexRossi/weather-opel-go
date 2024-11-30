@@ -47,6 +47,11 @@ Na raiz do projeto, temos um arquivo `docker-compose.yml` que configura os servi
 ```bash
 docker-compose up --build
 ```
+Ou execute o comando do makefile
+```bash
+make up
+```
+
 Isso irá:
 
 Construir as imagens Docker para Serviço A e Serviço B.
