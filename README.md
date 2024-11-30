@@ -47,10 +47,15 @@ Na raiz do projeto, temos um arquivo `docker-compose.yml` que configura os servi
 ```bash
 docker-compose up --build
 ```
+Ou execute o comando do makefile
+```bash
+make up
+```
+
 Isso irá:
 
 Construir as imagens Docker para Serviço A e Serviço B.
-Subir o container do Zipkin.
+Subir o container do Zipkin.bui
 Expor os serviços nas portas configuradas (8081 para o Serviço A, 8082 para o Serviço B e 9411 para o Zipkin).
 
 ### Passo 4: Testar os Serviços
@@ -60,7 +65,7 @@ Serviço A (Validação e Redirecionamento)
 Faça uma requisição `POST` para o Serviço A com um JSON contendo o CEP:
 
 ```bash
-curl -X POST http://localhost:8081/cep -d '{"cep": "29902555"}' -H "Content-Type: application/json"
+curl -X POST http://localhost:8081/cep -d 'v' -H "Content-Type: application/json"
 ```
 
 Se o CEP for válido, o Serviço A chamará o Serviço B e retornará a resposta com a cidade e as temperaturas.
@@ -85,3 +90,19 @@ Ao chamar o Serviço A com um CEP válido (`29902555`), você deverá obter a re
 }
 
 ```
+
+## Visualização do Tracing e Exemplos
+
+### Tracing no Zipkin
+A imagem abaixo mostra o tracing distribuído visualizado no painel do Zipkin, com o rastreamento das requisições entre os Serviços A e B.
+
+![Tracing no Zipkin](./docs/zipkin.png)
+
+### Requisição de Exemplo no Postman
+A imagem abaixo mostra uma requisição de exemplo no Postman para testar os serviços.
+
+![Postman Example](./docs/postman.png)
+
+## Download da Coleção Postman
+
+Você pode baixar a coleção Postman usada para testar os serviços clicando [aqui](./docs/Weather-opel.postman_collection.json).

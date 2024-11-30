@@ -15,24 +15,27 @@ import (
 	"go.opentelemetry.io/otel/exporters/zipkin"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	"go.opentelemetry.io/otel/trace"
+	tracers "go.opentelemetry.io/otel/trace"
 )
 
-var tracer trace.Tracer
+var tracer tracers.Tracer
 
 type CepRequest struct {
 	Cep string `json:"cep"`
 }
 
 func main() {
-	exporter, err := zipkin.NewExporter("http://localhost:9411/api/v2/spans", zipkin.WithSDKOptions())
+	// Update Zipkin endpoint to explicitly use IPv4
+	const zipkinEndpoint = "http://zipkin:9411/api/v2/spans"
+	exporter, err := zipkin.New(zipkinEndpoint)
 	if err != nil {
-		log.Fatalf("Falha ao configurar o exportador Zipkin: %v", err)
+		log.Fatalf("Failed to configure Zipkin exporter: %v", err)
 	}
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
-		trace.WithResource(resource.NewWithAttributes(attribute.Key("service.name").String("servico-a"))),
+		trace.WithResource(resource.NewWithAttributes("service-a",
+			attribute.String("service.name", "servico-a"))),
 	)
 	otel.SetTracerProvider(tp)
 
@@ -41,7 +44,10 @@ func main() {
 	http.HandleFunc("/cep", handleCepRequest)
 
 	log.Println("Servidor A iniciado na porta 8081...")
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	err = http.ListenAndServe(":8081", nil)
+	if err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
 
 func handleCepRequest(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +102,7 @@ func callServicoB(ctx context.Context, cep string) (map[string]interface{}, erro
 		return nil, fmt.Errorf("erro ao montar o corpo da requisição para o Serviço B")
 	}
 
-	resp, err := http.Post("http://localhost:8082/weather", "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post("http://127.0.0.1:8082/weather", "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, fmt.Errorf("erro ao chamar o Serviço B: %v", err)
 	}
